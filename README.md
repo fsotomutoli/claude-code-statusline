@@ -5,16 +5,18 @@ A custom status line script for [Claude Code](https://claude.ai/code) that surfa
 ## What it shows
 
 ```
-🌿 main  |  🟢 14% · 28.4k  |  🟡 57% (114.0k/200.0k)  |  🤖 Sonnet 4.6 [high]  |  🔄 Jun 03 23:20
+🌿 main · 💾 2 uncommitted changes  |  🟢 [██░░░░░░░░] 13% (26.0k/200.0k)  |  🤖 Sonnet 4.6 [high]  |  🔄 Jun 18 03:50 (en 2h 15m)
 ```
+
+Colors are applied via ANSI: cyan for branch, yellow for uncommitted changes, green/yellow/red for token bar and percentage, magenta for model, blue for refresh time.
 
 | Segment | Description |
 |---|---|
 | 🌿 `main` | Current git branch (only shown inside a git repo) |
-| 🟢/🟡/🔴 `14% · 28.4k` | Session context window usage % + tokens used |
-| 🟢/🟡/🔴 `57% (114.0k/200.0k)` | Global 5-hour rate limit usage % + calculated used/total |
+| 💾 `2 uncommitted changes` | Files modified/added/deleted but not yet committed (hidden when clean) |
+| 🟢/🟡/🔴 `[██░░░░░░░░] 13%` | Global 5-hour rate limit: progress bar + usage % + used/total tokens |
 | 🤖 `Sonnet 4.6 [high]` | Active model + effort level |
-| 🔄 `Jun 03 23:20` | Next token refresh time |
+| 🔄 `Jun 18 03:50 (en 2h 15m)` | Next token refresh time + relative countdown |
 
 **Color coding:**
 - 🟢 0–49% — you're good
