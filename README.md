@@ -5,7 +5,7 @@ A custom status line script for [Claude Code](https://claude.ai/code) that surfa
 ## What it shows
 
 ```
-🌿 main · 💾 2 uncommitted changes  |  🟢 [██░░░░░░░░] 13%  |  🧠 8% ctx  |  🤖 Sonnet 4.6 [high]  |  🔄 Jun 18 03:50 (en 2h 15m)
+🌿 main · 💾 2 uncommitted changes  |  🟢 [██░░░░░░░░] 13%  |  🧠 8% ctx (15.5k/200.0k)  |  🤖 Sonnet 4.6 [high]  |  🔄 Jun 18 03:50 (en 2h 15m)
 ```
 
 Colors are applied via ANSI: cyan for branch, yellow for uncommitted changes, green/yellow/red for the rate-limit bar and context percentage, magenta for model, blue for refresh time.
@@ -15,7 +15,7 @@ Colors are applied via ANSI: cyan for branch, yellow for uncommitted changes, gr
 | 🌿 `main` | Current git branch (only shown inside a git repo) |
 | 💾 `2 uncommitted changes` | Files modified/added/deleted but not yet committed (hidden when clean) |
 | 🟢/🟡/🔴 `[██░░░░░░░░] 13%` | Global 5-hour rate limit: progress bar + usage % (claude.ai Pro/Max only) |
-| 🧠 `8% ctx` | Share of the model's context window used in the current session |
+| 🧠 `8% ctx (15.5k/200.0k)` | Context window: % used + tokens currently in context / window size |
 | 🤖 `Sonnet 4.6 [high]` | Active model + effort level |
 | 🔄 `Jun 18 03:50 (en 2h 15m)` | When the 5-hour rate limit resets + relative countdown (claude.ai Pro/Max only) |
 
