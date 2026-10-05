@@ -11,13 +11,17 @@ fi
 # Global (rate limit) token usage — 5-hour window
 five_pct=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 five_reset=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
-ctx_window_size=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
+
+# Context window usage (% of the model's context window)
+ctx_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+ctx_used=$(echo "$input" | jq -r '.context_window.total_input_tokens // empty')
+ctx_size=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
 
 # Model and effort
 model_name=$(echo "$input" | jq -r '.model.display_name // empty')
 effort_level=$(echo "$input" | jq -r '.effort.level // empty')
 
-# Format raw token counts as e.g. 12.3k or 200k
+# Format raw token counts as e.g. 12.3k or 200.0k
 fmt_tokens() {
   local n=$1
   if [ -n "$n" ] && [ "$n" -gt 0 ] 2>/dev/null; then
@@ -95,21 +99,26 @@ if [ -n "$git_branch" ]; then
   fi
 fi
 
-# 3. Global (5-hour): colored dot + progress bar + % + calculated used/total from context window size
+# 2. Global (5-hour rate limit): colored dot + progress bar + %
 if [ -n "$five_pct" ]; then
   five_int=$(printf '%.0f' "$five_pct")
   dot=$(color_dot "$five_int")
   bar=$(progress_bar "$five_int")
-  detail=""
-  if [ -n "$ctx_window_size" ] && [ "$ctx_window_size" -gt 0 ] 2>/dev/null; then
-    five_used_calc=$(awk "BEGIN {printf \"%d\", $five_pct * $ctx_window_size / 100}")
-    used_fmt=$(fmt_tokens "$five_used_calc")
-    total_fmt=$(fmt_tokens "$ctx_window_size")
-    [ -n "$used_fmt" ] && [ -n "$total_fmt" ] && detail="${C_DIM} (${used_fmt}/${total_fmt})${C_RESET}"
-  fi
   pct_col=$(pct_color "$five_int")
   [ -n "$parts" ] && parts="${parts}${SEP}"
-  parts="${parts}${dot} ${bar} ${pct_col}${five_int}%${C_RESET}${detail}"
+  parts="${parts}${dot} ${bar} ${pct_col}${five_int}%${C_RESET}"
+fi
+
+# 3. 🧠 Context window usage: % + tokens in context / window size
+if [ -n "$ctx_pct" ]; then
+  ctx_int=$(printf '%.0f' "$ctx_pct")
+  ctx_col=$(pct_color "$ctx_int")
+  ctx_detail=""
+  used_fmt=$(fmt_tokens "$ctx_used")
+  size_fmt=$(fmt_tokens "$ctx_size")
+  [ -n "$used_fmt" ] && [ -n "$size_fmt" ] && ctx_detail="${C_DIM} (${used_fmt}/${size_fmt})${C_RESET}"
+  [ -n "$parts" ] && parts="${parts}${SEP}"
+  parts="${parts}🧠 ${ctx_col}${ctx_int}%${C_RESET}${C_DIM} ctx${C_RESET}${ctx_detail}"
 fi
 
 # 4. 🤖 Model name + effort level
